@@ -1,0 +1,56 @@
+﻿@inject HttpClient Http
+
+<div class="card">
+    <div class="card-icon z-depth-1-half @BgColor">
+        <i class="@Icon"></i>
+    </div>
+    <div class="card-body">
+        <div class="card-body text-right">
+            <h6 class="card-title">@data.Title</h6>
+            <h3 class="card-number mb-5 mr-2">@data.CurrentValue</h3>
+            <div class="card-text">
+                <div class="progress w-100">
+                    <div class="progress-bar @BgColor" style="@ProgressBarProcent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private SmallPanelData data = new SmallPanelData();
+
+    [Parameter]
+    public string Icon { get; set; }
+
+    [Parameter]
+    public string Color { get; set; }
+
+    [Parameter]
+    public string Url { get; set; }
+
+    private string BgColor => $"{Color.ToLower()}-color";
+    private string ProgressBarProcent { get; set; } = "width: 0%;";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        data = await Http.GetFromJsonAsync<SmallPanelData>(Url);
+
+        if (data != null)
+        {
+            if (!String.IsNullOrEmpty(data.MaxValue))
+            {
+                int current = int.Parse(data.CurrentValue);
+                int max = int.Parse(data.MaxValue);
+
+                string procentRounded = Math.Round((double)(100 * current) / max).ToString();
+                ProgressBarProcent = $"width: {procentRounded}%;";
+
+                data.CurrentValue = $"{data.CurrentValue} / {data.MaxValue}";
+            }
+        }
+
+    }
+
+}
