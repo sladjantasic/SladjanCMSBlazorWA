@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -24,8 +25,11 @@ namespace AzureFunctions
             )] out dynamic cosmosdb,
             ILogger log)
         {
-            dynamic data = httpClient.GetFromJsonAsync<dynamic>("https://lexiconlaboration-functionapp.azurewebsites.net/api/temperature?deviceid=84:f3:eb:5a:9c:c3").GetAwaiter().GetResult();
-            cosmosdb = data;
+            log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
+            //dynamic data = httpClient.GetFromJsonAsync<dynamic>("https://lexiconlaboration-functionapp.azurewebsites.net/api/temperature?deviceid=84:f3:eb:5a:9c:c3").GetAwaiter().GetResult();
+            //cosmosdb = data;
+            var data2 = httpClient.GetStreamAsync("https://lexiconlaboration-functionapp.azurewebsites.net/api/temperature?deviceid=84:f3:eb:5a:9c:c3").GetAwaiter().GetResult();
+            cosmosdb = new StreamReader(data2).ReadToEnd();
         }
     }
 }
