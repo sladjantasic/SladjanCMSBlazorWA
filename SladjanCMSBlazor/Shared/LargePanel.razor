@@ -27,7 +27,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var data = await Http.GetStringAsync("https://sladjaniotfunc.azurewebsites.net/api/GetSensorFromCosmos");
+        var data = await Http.GetStringAsync(Url);
         await JSRuntime.InvokeVoidAsync("populateChart", data);
     }
 }

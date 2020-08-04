@@ -1,23 +1,43 @@
 ﻿@page "/devices"
+@inject HttpClient Http
 
 <h3>Devices</h3>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th scope="col">column1</th>
-            <th scope="col">column2</th>
-            <th scope="col">column3</th>
-            <th scope="col">column4</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            
-        </tr>
-    </tbody>
-</table>
+
+@if (devices == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="font-weight-bold text-success" scope="col">Device Name</th>
+                <th class="font-weight-bold text-success" scope="col">Connection Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var device in devices)
+            {
+                <tr>
+                    <td>@device.Name</td>
+                    <td>@device.ConnectionState</td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+}
 
 @code {
+
+    private DeviceViewModel[] devices;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await Http.GetStringAsync("https://sladjaniotfunc.azurewebsites.net/api/GetDevicesInfo");
+        devices = JsonConvert.DeserializeObject<DeviceViewModel[]>(data);
+    }
 
 }
