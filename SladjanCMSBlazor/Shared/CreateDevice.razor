@@ -1,0 +1,31 @@
+﻿@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+
+
+<EditForm Model=@device OnSubmit=@FormSubmitted>
+    <h3>Create New Device</h3>
+
+    <div class="form-group">
+        <label for="InputName">Name</label>
+        <InputText @bind-Value=device.DeviceId class="form-control" id="InputName" />
+    </div>
+    <div class="form-group">
+        <label for="InputDecription">Description</label>
+        <InputTextArea @bind-Value=device.Description class="form-control" id="InputDescription" />
+    </div>
+    <input type="submit" value="Submit" class="btn btn-primary" />
+</EditForm>
+
+
+
+@code
+{
+    CreateDeviceViewModel device = new CreateDeviceViewModel();
+
+    async Task<HttpResponseMessage> FormSubmitted()
+    {
+        var content = await httpClient.PostAsJsonAsync<CreateDeviceViewModel>("https://sladjaniotfunc.azurewebsites.net/api/CreateDevice", device);
+        navigationManager.NavigateTo("/devices", true);
+        return content;
+    }
+}

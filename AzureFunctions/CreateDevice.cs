@@ -21,11 +21,11 @@ namespace AzureFunctions
             ILogger log)
         {
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var data = JsonConvert.DeserializeObject<dynamic>(requestBody);
+            var data = JsonConvert.DeserializeObject<Device>(requestBody);
 
             if (data != null)
             {
-                await registryManager.AddDeviceAsync(new Device(data.deviceId));
+                await registryManager.AddDeviceAsync(data);
                 return new OkResult();
             }
             else
